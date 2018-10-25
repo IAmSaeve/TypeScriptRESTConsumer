@@ -1,45 +1,56 @@
+// Import
 import axios, { AxiosError } from "../../node_modules/axios/index";
 
+// Variables
 const customerList: HTMLUListElement = document.getElementById("customerList") as HTMLUListElement;
 
 const getbtn: HTMLButtonElement = document.getElementById("getAllButton") as HTMLButtonElement;
 const postbtn: HTMLButtonElement = document.getElementById("postCustomer") as HTMLButtonElement;
+const putbtn: HTMLButtonElement = document.getElementById("putCustomer") as HTMLButtonElement;
+const deletebtn: HTMLButtonElement = document.getElementById("deleteCustomer") as HTMLButtonElement;
 
-const endpointInput: HTMLInputElement = document.getElementById("endpoint") as HTMLInputElement;
+// TODO: Implement option to choose a server from browser
+const endpointInput: HTMLInputElement = document.getElementById("server") as HTMLInputElement;
 const idInput: HTMLInputElement = document.getElementById("customerId") as HTMLInputElement;
 const firstNameInput: HTMLInputElement = document.getElementById("customerFirstName") as HTMLInputElement;
 const lastNameInput: HTMLInputElement = document.getElementById("customerLastName") as HTMLInputElement;
 const yearInput: HTMLInputElement = document.getElementById("customerYear") as HTMLInputElement;
 
-const uri: string = endpointInput.value;
+const putIdInput: HTMLInputElement = document.getElementById("putId") as HTMLInputElement;
+const putFirstNameInput: HTMLInputElement = document.getElementById("putCustomerFirstName") as HTMLInputElement;
+const putLastNameInput: HTMLInputElement = document.getElementById("putCustomerLastName") as HTMLInputElement;
+const putYearInput: HTMLInputElement = document.getElementById("putCustomerYear") as HTMLInputElement;
 
+const deleteIdInput: HTMLInputElement = document.getElementById("deleteId") as HTMLInputElement;
+
+// URL to server
+const uri: string = "https://restcustomerservice20181007065419.azurewebsites.net/api/Customers/";
+
+// Event listeners
 getbtn.addEventListener("click", ShowAllCustomers);
 postbtn.addEventListener("click", PostCustomer);
+putbtn.addEventListener("click", PutCustomer);
+deletebtn.addEventListener("click", DeleteCustomer);
 
 function ShowAllCustomers() {
     axios.get<ICustomer[]>(uri)
         .then((response) => {
-            console.log(response);
+            // Clears list on button press
+            customerList.innerHTML = "";
+
+            // Loop data in array and add to HTML list
             response.data.forEach((c) => {
-                if (c != null) {
-                    const node = document.createElement("li");
+                const node = document.createElement("li");
 
-                    node.appendChild(document.createTextNode(
-                        `ID: ${c.id}, Model: ${c.fistName}, Vendor: ${c.lastName}, Price: ${c.year}`));
-                    customerList.appendChild(node);
-                } else {
-                    console.log("Caught null element");
-                }
-
+                node.appendChild(document.createTextNode(
+                    `ID: ${c.id}, Model: ${c.fistName}, Vendor: ${c.lastName}, Price: ${c.year}`));
+                customerList.appendChild(node);
             });
-        })
-        .catch((error: AxiosError) => {
-            console.error(error);
         });
 }
 
 function PostCustomer() {
-    // const data = { model: modelInput.value, vendor: vendorInput.value, price: +priceInput.value };
+    // Construct data to send
     const data = {
         id: idInput.value,
         firstName: firstNameInput.value,
@@ -47,14 +58,45 @@ function PostCustomer() {
         year: yearInput.value,
     };
 
-    axios.post(uri, data)
-        .then((response) => {
-            console.log(response);
-        }).catch((error) => {
-            console.error(error);
-        });
+    // Send data
+    axios.post(uri, data);
+
+    // Clear input fields
+    idInput.value = "";
+    firstNameInput.value = "";
+    lastNameInput.value = "";
+    yearInput.value = "";
 }
 
+function PutCustomer() {
+    // Construct data to send
+    const data = {
+        id: putIdInput.value,
+        firstName: putFirstNameInput.value,
+        lastName: putLastNameInput.value,
+        year: putYearInput.value,
+    };
+
+    // Send data
+    console.log(uri + putIdInput.value, data);
+    axios.put(uri + putIdInput.value, data);
+
+    // Clear input fields
+    putIdInput.value = "";
+    putFirstNameInput.value = "";
+    putLastNameInput.value = "";
+    putYearInput.value = "";
+}
+
+function DeleteCustomer() {
+    // Send data
+    axios.delete(uri + deleteIdInput.value);
+
+    // Clear input field
+    deleteIdInput.value = "";
+}
+
+// Customer interface
 interface ICustomer {
     id: number;
     fistName: string;

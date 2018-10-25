@@ -11,8 +11,8 @@
   <h1>Axios HTTP in TypeScript</h1>
 
   <div>
-    <h3>Input a server endpoint:</h3>
-    <input type="text" name="Endpoint" id="endpoint" placeholder="https://www.exampel.com"> <br>
+    Input a server endpoint: <br>
+    <input type="text" name="Endpoint" id="server" placeholder="https://www.exampel.com"> <br>
   </div>
 
   <div>
@@ -28,6 +28,21 @@
     <input type="text" name="Last name" id="customerLastName" placeholder="Last name"> <br>
     <input type="number" name="Year" id="customerYear" placeholder="Year"> <br>
     <button id="postCustomer">Post customer</button>
+  </div>
+
+  <div>
+    <h2>Put customer</h2>
+    <input type="number" name="Id" id="putId" placeholder="Id"> <br>
+    <input type="text" name="First name" id="putCustomerFirstName" placeholder="First name"> <br>
+    <input type="text" name="Last name" id="putCustomerLastName" placeholder="Last name"> <br>
+    <input type="number" name="Year" id="putCustomerYear" placeholder="Year"> <br>
+    <button id="putCustomer">Put customer</button>
+  </div>
+
+  <div>
+    <h2>Delete customer</h2>
+    <input type="number" name="Id" id="deleteId" placeholder="Id"> <br>
+    <button id="deleteCustomer"> Delete customer </button>
   </div>
 
   <script src="bundle.js"></script>
