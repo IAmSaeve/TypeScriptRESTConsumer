@@ -11,14 +11,27 @@
   <h1>Axios HTTP in TypeScript</h1>
 
   <div>
-    Input a server endpoint: <br>
-    <input type="text" name="Endpoint" id="server" placeholder="https://www.exampel.com"> <br>
+    Choose a server endpoint: <br>
+    <select name="endpoint" id="server">
+      <option value="https://restcustomerservice20181007065419.azurewebsites.net/api/Customers/">Azure HTTPS</option>
+      <option value="http://restcustomerservice20181007065419.azurewebsites.net/api/Customers/">Azure HTTP</option>
+      <option value="https://localhost:5001/api/Customers/">Localhost HTTPS</option>
+      <option value="http://localhost:5000/api/Customers/">Localhost HTTP</option>
+    </select>
   </div>
 
   <div>
     <h2>List of customers</h2>
     <button id="getAllButton"> Get all customers </button>
-    <ul id="customerList"></ul>
+    <table>
+      <thead>
+        <th>ID:</th>
+        <th>First name:</th>
+        <th>Last name:</th>
+        <th>Year:</th>
+      </thead>
+      <tbody id="customerTable"></tbody>
+    </table>
   </div>
 
   <div>

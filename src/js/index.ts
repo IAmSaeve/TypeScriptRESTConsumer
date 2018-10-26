@@ -2,15 +2,15 @@
 import axios, { } from "../../node_modules/axios/index";
 
 // Variables
-const customerList: HTMLUListElement = document.getElementById("customerList") as HTMLUListElement;
+const customerTable: HTMLTableElement = document.getElementById("customerTable") as HTMLTableElement;
 
 const getbtn: HTMLButtonElement = document.getElementById("getAllButton") as HTMLButtonElement;
 const postbtn: HTMLButtonElement = document.getElementById("postCustomer") as HTMLButtonElement;
 const putbtn: HTMLButtonElement = document.getElementById("putCustomer") as HTMLButtonElement;
 const deletebtn: HTMLButtonElement = document.getElementById("deleteCustomer") as HTMLButtonElement;
 
-// TODO: Implement option to choose a server from browser
-const endpointInput: HTMLInputElement = document.getElementById("server") as HTMLInputElement;
+const endpoint: HTMLSelectElement = document.getElementById("server") as HTMLSelectElement;
+
 const idInput: HTMLInputElement = document.getElementById("customerId") as HTMLInputElement;
 const firstNameInput: HTMLInputElement = document.getElementById("customerFirstName") as HTMLInputElement;
 const lastNameInput: HTMLInputElement = document.getElementById("customerLastName") as HTMLInputElement;
@@ -24,7 +24,11 @@ const putYearInput: HTMLInputElement = document.getElementById("putCustomerYear"
 const deleteIdInput: HTMLInputElement = document.getElementById("deleteId") as HTMLInputElement;
 
 // URL to server
-const uri: string = "https://restcustomerservice20181007065419.azurewebsites.net/api/Customers/";
+let uri: string = endpoint.value;
+endpoint.addEventListener("change", UpdateURL);
+function UpdateURL() {
+    uri = endpoint.value;
+}
 
 // Event listeners
 getbtn.addEventListener("click", ShowAllCustomers);
@@ -35,21 +39,29 @@ deletebtn.addEventListener("click", DeleteCustomer);
 function ShowAllCustomers() {
     axios.get<ICustomer[]>(uri)
         .then((response) => {
+            CheckURL();
             // Clears list on button press
-            customerList.innerHTML = "";
+            customerTable.innerHTML = "";
 
-            // Loop data in array and add to HTML list
+            // Loop data in array and add to HTML table
             response.data.forEach((c: ICustomer) => {
-                const node = document.createElement("li");
+                const row = customerTable.insertRow();
 
-                node.appendChild(document.createTextNode(
-                    `ID: ${c.id}, First name: ${c.firstName}, Last name: ${c.lastName}, Year: ${c.year}`));
-                customerList.appendChild(node);
+                const ID = row.insertCell();
+                const FIRSTNAME = row.insertCell();
+                const LASTNAME = row.insertCell();
+                const YEAR = row.insertCell();
+
+                ID.innerText = c.id.toString();
+                FIRSTNAME.innerText = c.firstName.toString();
+                LASTNAME.innerText = c.lastName.toString();
+                YEAR.innerText = c.year.toString();
             });
         });
 }
 
 function PostCustomer() {
+    CheckURL();
     // Construct data to send
     const data: ICustomer = {
         id: idInput.valueAsNumber,
@@ -69,6 +81,7 @@ function PostCustomer() {
 }
 
 function PutCustomer() {
+    CheckURL();
     // Construct data to send
     const data: ICustomer = {
         id: putIdInput.valueAsNumber,
@@ -88,11 +101,19 @@ function PutCustomer() {
 }
 
 function DeleteCustomer() {
+    CheckURL();
     // Send data
     axios.delete(uri + deleteIdInput.value);
 
     // Clear input field
     deleteIdInput.value = "";
+}
+
+// Function to check for, and, add / at end of URL.
+function CheckURL() {
+    if ((uri.lastIndexOf("/") + 1) !== uri.length) {
+        uri += "/";
+    }
 }
 
 // Customer interface
