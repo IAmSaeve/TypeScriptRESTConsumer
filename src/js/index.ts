@@ -1,5 +1,5 @@
 // Import
-import axios, { AxiosError } from "../../node_modules/axios/index";
+import axios, { } from "../../node_modules/axios/index";
 
 // Variables
 const customerList: HTMLUListElement = document.getElementById("customerList") as HTMLUListElement;
@@ -39,11 +39,11 @@ function ShowAllCustomers() {
             customerList.innerHTML = "";
 
             // Loop data in array and add to HTML list
-            response.data.forEach((c) => {
+            response.data.forEach((c: ICustomer) => {
                 const node = document.createElement("li");
 
                 node.appendChild(document.createTextNode(
-                    `ID: ${c.id}, Model: ${c.fistName}, Vendor: ${c.lastName}, Price: ${c.year}`));
+                    `ID: ${c.id}, First name: ${c.firstName}, Last name: ${c.lastName}, Year: ${c.year}`));
                 customerList.appendChild(node);
             });
         });
@@ -51,11 +51,11 @@ function ShowAllCustomers() {
 
 function PostCustomer() {
     // Construct data to send
-    const data = {
-        id: idInput.value,
+    const data: ICustomer = {
+        id: idInput.valueAsNumber,
         firstName: firstNameInput.value,
         lastName: lastNameInput.value,
-        year: yearInput.value,
+        year: yearInput.valueAsNumber,
     };
 
     // Send data
@@ -70,15 +70,14 @@ function PostCustomer() {
 
 function PutCustomer() {
     // Construct data to send
-    const data = {
-        id: putIdInput.value,
+    const data: ICustomer = {
+        id: putIdInput.valueAsNumber,
         firstName: putFirstNameInput.value,
         lastName: putLastNameInput.value,
-        year: putYearInput.value,
+        year: putYearInput.valueAsNumber,
     };
 
     // Send data
-    console.log(uri + putIdInput.value, data);
     axios.put(uri + putIdInput.value, data);
 
     // Clear input fields
@@ -99,7 +98,7 @@ function DeleteCustomer() {
 // Customer interface
 interface ICustomer {
     id: number;
-    fistName: string;
+    firstName: string;
     lastName: string;
     year: number;
 }
