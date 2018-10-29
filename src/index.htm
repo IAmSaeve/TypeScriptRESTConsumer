@@ -17,12 +17,17 @@
       <option value="http://restcustomerservice20181007065419.azurewebsites.net/api/Customers/">Azure HTTP</option>
       <option value="https://localhost:5001/api/Customers/">Localhost HTTPS</option>
       <option value="http://localhost:5000/api/Customers/">Localhost HTTP</option>
-    </select>
+    </select> <br>
+    Add your own: <br>
+    <input type="url" name="Custom URI" id="cURI">
+    <button id="addURI">Add URI</button>
   </div>
 
   <div>
     <h2>List of customers</h2>
-    <button id="getAllButton"> Get all customers </button>
+    <button id="getAllButton"> Get all customers </button> <br>
+    <input type="number" name="Id" id="customerId" placeholder="Id">
+    <button id="getACustomer"> Get a customer </button>
     <table>
       <thead>
         <th>ID:</th>
@@ -36,7 +41,6 @@
 
   <div>
     <h2>Post customer</h2>
-    <input type="number" name="Id" id="customerId" placeholder="Id"> <br>
     <input type="text" name="First name" id="customerFirstName" placeholder="First name"> <br>
     <input type="text" name="Last name" id="customerLastName" placeholder="Last name"> <br>
     <input type="number" name="Year" id="customerYear" placeholder="Year"> <br>

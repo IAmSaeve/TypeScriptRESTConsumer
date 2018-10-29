@@ -8,10 +8,13 @@ const getbtn: HTMLButtonElement = document.getElementById("getAllButton") as HTM
 const postbtn: HTMLButtonElement = document.getElementById("postCustomer") as HTMLButtonElement;
 const putbtn: HTMLButtonElement = document.getElementById("putCustomer") as HTMLButtonElement;
 const deletebtn: HTMLButtonElement = document.getElementById("deleteCustomer") as HTMLButtonElement;
+const addURIbtn: HTMLButtonElement = document.getElementById("addURI") as HTMLButtonElement;
+const getOnebtn: HTMLButtonElement = document.getElementById("getACustomer") as HTMLButtonElement;
 
 const endpoint: HTMLSelectElement = document.getElementById("server") as HTMLSelectElement;
+const customURI: HTMLInputElement = document.getElementById("cURI") as HTMLInputElement;
 
-const idInput: HTMLInputElement = document.getElementById("customerId") as HTMLInputElement;
+const getIdInput: HTMLInputElement = document.getElementById("customerId") as HTMLInputElement;
 const firstNameInput: HTMLInputElement = document.getElementById("customerFirstName") as HTMLInputElement;
 const lastNameInput: HTMLInputElement = document.getElementById("customerLastName") as HTMLInputElement;
 const yearInput: HTMLInputElement = document.getElementById("customerYear") as HTMLInputElement;
@@ -25,21 +28,20 @@ const deleteIdInput: HTMLInputElement = document.getElementById("deleteId") as H
 
 // URL to server
 let uri: string = endpoint.value;
-endpoint.addEventListener("change", UpdateURL);
-function UpdateURL() {
-    uri = endpoint.value;
-}
 
 // Event listeners
 getbtn.addEventListener("click", ShowAllCustomers);
+getOnebtn.addEventListener("click", ShowACustomer);
 postbtn.addEventListener("click", PostCustomer);
 putbtn.addEventListener("click", PutCustomer);
 deletebtn.addEventListener("click", DeleteCustomer);
+addURIbtn.addEventListener("click", AddURI);
+
+endpoint.addEventListener("change", UpdateURL);
 
 function ShowAllCustomers() {
     axios.get<ICustomer[]>(uri)
         .then((response) => {
-            CheckURL();
             // Clears list on button press
             customerTable.innerHTML = "";
 
@@ -60,11 +62,32 @@ function ShowAllCustomers() {
         });
 }
 
+function ShowACustomer() {
+    axios.get<ICustomer>(uri + getIdInput.valueAsNumber)
+        .then((response) => {
+            // Clears list on button press
+            customerTable.innerHTML = "";
+
+            // Loop data in array and add to HTML table
+            const c: ICustomer = response.data;
+            const row = customerTable.insertRow();
+
+            const ID = row.insertCell();
+            const FIRSTNAME = row.insertCell();
+            const LASTNAME = row.insertCell();
+            const YEAR = row.insertCell();
+
+            ID.innerText = c.id.toString();
+            FIRSTNAME.innerText = c.firstName.toString();
+            LASTNAME.innerText = c.lastName.toString();
+            YEAR.innerText = c.year.toString();
+        });
+}
+
 function PostCustomer() {
-    CheckURL();
     // Construct data to send
     const data: ICustomer = {
-        id: idInput.valueAsNumber,
+        id: null,
         firstName: firstNameInput.value,
         lastName: lastNameInput.value,
         year: yearInput.valueAsNumber,
@@ -74,14 +97,12 @@ function PostCustomer() {
     axios.post(uri, data);
 
     // Clear input fields
-    idInput.value = "";
     firstNameInput.value = "";
     lastNameInput.value = "";
     yearInput.value = "";
 }
 
 function PutCustomer() {
-    CheckURL();
     // Construct data to send
     const data: ICustomer = {
         id: putIdInput.valueAsNumber,
@@ -101,7 +122,6 @@ function PutCustomer() {
 }
 
 function DeleteCustomer() {
-    CheckURL();
     // Send data
     axios.delete(uri + deleteIdInput.value);
 
@@ -109,11 +129,22 @@ function DeleteCustomer() {
     deleteIdInput.value = "";
 }
 
-// Function to check for, and, add / at end of URL.
-function CheckURL() {
+// Function to update URI
+function UpdateURL() {
+    uri = endpoint.value;
     if ((uri.lastIndexOf("/") + 1) !== uri.length) {
         uri += "/";
     }
+}
+
+function AddURI() {
+    let counter = 1;
+    const node = document.createElement("option");
+    node.value = customURI.value;
+    node.text = "Custom URI " + counter++;
+    endpoint.appendChild(node);
+
+    customURI.value = "";
 }
 
 // Customer interface
